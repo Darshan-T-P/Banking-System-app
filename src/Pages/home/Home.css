@@ -1,0 +1,34 @@
+* {
+    box-sizing: border-box; /* Ensure padding and borders don't cause overflow */
+}
+
+body {
+    margin: 0; /* Remove default browser margins */
+    padding:20;
+}
+
+.home-page {
+    width: 80vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.home-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align to top-left */
+    justify-content: flex-start;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    background-color: #f0f4f8; /*Light background */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow */
+    width: 100%; /* Full width of parent */
+}
+
+.text-bankGradient {
+    color: #007BFF; /* Blue color */
+    font-weight: bold; /* Bold text */
+}

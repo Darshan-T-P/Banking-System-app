@@ -1,0 +1,47 @@
+.dashboard {
+    flex: 1;
+    padding: 20px;
+  }
+  .dashboard-header h1 {
+    margin: 0;
+  }
+  .highlight {
+    color: #0ea5e9;
+  }
+  .summary {
+    margin: 20px 0;
+  }
+  .balance-box {
+    background-color: #f1f5f9;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .add-btn {
+    background-color: #0ea5e9;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .transactions {
+    margin-top: 30px;
+  }
+  .transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .transaction-table th, .transaction-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .red {
+    color: red;
+  }
+  .green {
+    color: green;
+  }
+  

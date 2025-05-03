@@ -1,0 +1,63 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+.text-bankGradient {
+  color: #007BFF; /* Bootstrap blue */
+  font-weight: bold;
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.total-balance {
+  @apply flex w-full items-center gap-4 rounded-xl border border-gray-200 p-4 shadow-chart sm:gap-6 sm:p-6;
+}
+.total-balance-chart {
+  @apply flex size-full max-w-[100px] items-center sm:max-w-[120px];
+}
+.total-balance-label {
+  @apply text-14 font-medium text-gray-600;
+}
+.total-balance-amount {
+  @apply text-24 lg:text-30 flex-1 font-semibold text-gray-900;
+}
+.header-2 {
+  @apply text-18 font-semibold text-gray-900;
+}
