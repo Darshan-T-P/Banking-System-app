@@ -1,10 +1,12 @@
-const Button = ({ children, ...props }) => {
-    return (
-      <button {...props} className="bg-blue-500 text-white p-2 rounded">
-        {children}
-      </button>
-    );
-  };
-  
-  export default Button;
-  
+// Button.jsx (if it's a custom component)
+import React from 'react';
+
+const Button = ({ children, onClick, variant }) => {
+  return (
+    <button className={`button ${variant}`} onClick={onClick}>
+      {children}
+    </button>
+  );
+};
+
+export {Button};

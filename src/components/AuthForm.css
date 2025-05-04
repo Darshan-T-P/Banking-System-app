@@ -1,3 +1,4 @@
+/* AuthForm.css */
 .auth-container {
     display: flex;
     width: 1800px;
@@ -20,8 +21,9 @@
 }
 
 .auth-form {
-    width: 900px;
-    height: 900px;
+    width: 80vw;  /* This will set the width to 80% of the viewport width */
+    max-width: 1200px; /* Ensures it doesn't get wider than 1200px */
+    height: auto; /* Adjust height to auto for better scaling */
     padding: 25px;
     background: rgba(255, 255, 255, 0.95);
     border-radius: 14px;
@@ -30,6 +32,8 @@
     display: flex;
     flex-direction: column;
 }
+
+
 
 .auth-image {
     width: 900px;
@@ -207,6 +211,7 @@
 
     .auth-form {
         width: 100%;
+        max-width: none;
         height: auto;
         border-radius: 0;
     }
@@ -225,4 +230,4 @@ body {
     justify-content: center;
     align-items: center;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-} 
+}

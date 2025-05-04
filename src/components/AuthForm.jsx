@@ -1,15 +1,16 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { authService } from '../services/api'
+import React, { useState, useEffect } from 'react'
 import bankLogo from '../assets/bank-logo.svg'
-import authImage from '../assets/auth-image.svg'
-import './AuthForm.css'
+import { useNavigate } from 'react-router-dom'
+import PlaidLink from './PlaidLink'; 
+ // Assuming PlaidLink component is already created
+ import './AuthForm.css'; 
 
 const AuthForm = ({ type }) => {
-  const navigate = useNavigate()
-  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);  // State to store the user
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('')
   const [formData, setFormData] = useState({
     firstName: '',
@@ -28,6 +29,14 @@ const AuthForm = ({ type }) => {
 
   const [errors, setErrors] = useState({})
 
+  useEffect(() => {
+    // Simulate fetching the user or checking if the user is already logged in (e.g., from localStorage)
+    const storedUser = JSON.parse(localStorage.getItem('userId'));
+    if (storedUser) {
+      setUser(storedUser);  // Set the user if it exists in localStorage
+    }
+  }, []);  // Empty dependency array means this runs only on component mount
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({
@@ -45,7 +54,6 @@ const AuthForm = ({ type }) => {
 
   const validateForm = () => {
     const newErrors = {}
-    
     if (type === 'signup') {
       if (!formData.firstName) newErrors.firstName = 'First name is required'
       if (!formData.lastName) newErrors.lastName = 'Last name is required'
@@ -88,7 +96,7 @@ const AuthForm = ({ type }) => {
         const response = await authService.signUp(formData)
         if (response.user) {
           localStorage.setItem('userId', response.user._id)
-          navigate('/')
+          setUser(response.user)  // Update the user state after sign-up
         }
       } else {
         const response = await authService.signIn({
@@ -97,7 +105,7 @@ const AuthForm = ({ type }) => {
         })
         if (response.user) {
           localStorage.setItem('userId', response.user._id)
-          navigate('/')
+          setUser(response.user)  // Update the user state after sign-in
         }
       }
     } catch (error) {
@@ -123,137 +131,145 @@ const AuthForm = ({ type }) => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="form">
-            {type === 'signup' && (
-              <>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="firstName">First Name</label>
-                    <input
-                      type="text"
-                      id="firstName"
-                      name="firstName"
-                      placeholder="John"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="lastName">Last Name</label>
-                    <input
-                      type="text"
-                      id="lastName"
-                      name="lastName"
-                      placeholder="ex: Doe"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="address">Address</label>
-                  <input
-                    type="text"
-                    id="address"
-                    name="address"
-                    placeholder="Enter your specific address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="state">State</label>
-                    <input
-                      type="text"
-                      id="state"
-                      name="state"
-                      placeholder="ex: NY"
-                      value={formData.state}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="postalCode">Postal Code</label>
-                    <input
-                      type="text"
-                      id="postalCode"
-                      name="postalCode"
-                      placeholder="ex: 11101"
-                      value={formData.postalCode}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="dateOfBirth">Date of Birth</label>
-                    <input
-                      type="date"
-                      id="dateOfBirth"
-                      name="dateOfBirth"
-                      placeholder="yyyy-mm-dd"
-                      value={formData.dateOfBirth}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="ssn">SSN</label>
-                    <input
-                      type="text"
-                      id="ssn"
-                      name="ssn"
-                      placeholder="ex: 1234"
-                      value={formData.ssn}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter your email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
+          {/* {user ? ( */}
+            // If the user is logged in, show PlaidLink
+            <div className="flex flex-col gap-4">
+              <PlaidLink user={user} variant="primary" />
             </div>
+          {/* ) : ( */}
+            // If the user is not logged in, show the form
+            <form onSubmit={handleSubmit} className="form">
+              {type === 'signup' && (
+                <>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="firstName">First Name</label>
+                      <input
+                        type="text"
+                        id="firstName"
+                        name="firstName"
+                        placeholder="John"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="lastName">Last Name</label>
+                      <input
+                        type="text"
+                        id="lastName"
+                        name="lastName"
+                        placeholder="ex: Doe"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
 
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
+                  <div className="form-group">
+                    <label htmlFor="address">Address</label>
+                    <input
+                      type="text"
+                      id="address"
+                      name="address"
+                      placeholder="Enter your specific address"
+                      value={formData.address}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
 
-            {error && <div className="error-message">{error}</div>}
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="state">State</label>
+                      <input
+                        type="text"
+                        id="state"
+                        name="state"
+                        placeholder="ex: NY"
+                        value={formData.state}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="postalCode">Postal Code</label>
+                      <input
+                        type="text"
+                        id="postalCode"
+                        name="postalCode"
+                        placeholder="ex: 11101"
+                        value={formData.postalCode}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
 
-            <button type="submit" disabled={loading} className="submit-button">
-              {loading ? 'Processing...' : type === 'signup' ? 'Sign Up' : 'Sign In'}
-            </button>
-          </form>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label htmlFor="dateOfBirth">Date of Birth</label>
+                      <input
+                        type="date"
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        placeholder="yyyy-mm-dd"
+                        value={formData.dateOfBirth}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="ssn">SSN</label>
+                      <input
+                        type="text"
+                        id="ssn"
+                        name="ssn"
+                        placeholder="ex: 1234"
+                        value={formData.ssn}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              {error && <div className="error-message">{error}</div>}
+
+              <button type="submit" disabled={loading} className="submit-button">
+                {loading ? 'Processing...' : type === 'signup' ? 'Sign Up' : 'Sign In'}
+              </button>
+            </form>
+          {/* )} */}
 
           <p className="auth-switch">
             {type === 'signin' ? "Don't have an account?" : 'Already have an account?'}{' '}
@@ -266,11 +282,8 @@ const AuthForm = ({ type }) => {
           </p>
         </div>
       </div>
-      <div className="auth-image">
-        <img src={authImage} alt="Banking System" />
-      </div>
     </div>
-  )
+  );
 }
 
-export default AuthForm
+export default AuthForm;

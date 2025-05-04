@@ -1,4 +1,49 @@
 import User from '../models/model.js';
+import { plaidClient } from '../plaid/plaid.js';  // Import the plaid client
+
+
+// Create Link Token (for Plaid Link)
+export const createLinkToken = async (req, res) => {
+    try {
+        const { user } = req.body;  // Assuming user data is passed in the body
+
+        const tokenParams = {
+            user: {
+                client_user_id: user._id,  // Assuming `user._id` is available
+            },
+            client_name: user.firstName + ' ' + user.lastName,
+            products: ['auth'],
+            language: 'en',
+            country_codes: ['IN'], // India code, you can change based on your region
+        };
+
+        const response = await plaidClient.linkTokenCreate(tokenParams);
+        res.status(200).json({ linkToken: response.data.link_token });
+    } catch (error) {
+        console.error("Error creating Plaid link token:", error);
+        res.status(500).json({ message: 'Failed to create link token', error: error.message });
+    }
+};
+
+// Exchange Public Token (for Plaid Link)
+export const exchangePublicToken = async (req, res) => {
+    try {
+        const { publicToken, user } = req.body;  // publicToken and user are passed in the request
+
+        const exchangeResponse = await plaidClient.itemPublicTokenExchange({ public_token: publicToken });
+
+        // Optionally, store this item access information in the database for the user
+        // For example, storing `access_token` in the User model
+
+        user.plaidAccessToken = exchangeResponse.data.access_token;
+        await user.save();
+
+        res.status(200).json({ message: 'Public token exchanged successfully', accessToken: exchangeResponse.data.access_token });
+    } catch (error) {
+        console.error("Error exchanging public token:", error);
+        res.status(500).json({ message: 'Failed to exchange public token', error: error.message });
+    }
+};
 
 // Sign Up Controller
 export const signUp = async (req, res) => {

@@ -85,4 +85,5 @@ export const userService = {
             throw new Error(error.message || 'Failed to delete account');
         }
     }
+    
 };
