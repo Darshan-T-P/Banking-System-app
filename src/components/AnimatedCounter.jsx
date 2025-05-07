@@ -11,7 +11,7 @@ const AnimatedCounter = ({ amount }) => {
         end={amount}
       />
     </div>
-  );
+  ); 
 };
 
 export default AnimatedCounter;

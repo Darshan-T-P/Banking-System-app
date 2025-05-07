@@ -22,6 +22,9 @@
   color: #007BFF; /* Bootstrap blue */
   font-weight: bold;
 }
+.add-account-button:hover {
+  background-color: #0056b3;
+}
 
 @keyframes logo-spin {
   from {

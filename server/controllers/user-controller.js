@@ -1,49 +1,6 @@
 import User from '../models/model.js';
-import { plaidClient } from '../plaid/plaid.js';  // Import the plaid client
-
-
-// Create Link Token (for Plaid Link)
-export const createLinkToken = async (req, res) => {
-    try {
-        const { user } = req.body;  // Assuming user data is passed in the body
-
-        const tokenParams = {
-            user: {
-                client_user_id: user._id,  // Assuming `user._id` is available
-            },
-            client_name: user.firstName + ' ' + user.lastName,
-            products: ['auth'],
-            language: 'en',
-            country_codes: ['IN'], // India code, you can change based on your region
-        };
-
-        const response = await plaidClient.linkTokenCreate(tokenParams);
-        res.status(200).json({ linkToken: response.data.link_token });
-    } catch (error) {
-        console.error("Error creating Plaid link token:", error);
-        res.status(500).json({ message: 'Failed to create link token', error: error.message });
-    }
-};
-
-// Exchange Public Token (for Plaid Link)
-export const exchangePublicToken = async (req, res) => {
-    try {
-        const { publicToken, user } = req.body;  // publicToken and user are passed in the request
-
-        const exchangeResponse = await plaidClient.itemPublicTokenExchange({ public_token: publicToken });
-
-        // Optionally, store this item access information in the database for the user
-        // For example, storing `access_token` in the User model
-
-        user.plaidAccessToken = exchangeResponse.data.access_token;
-        await user.save();
-
-        res.status(200).json({ message: 'Public token exchanged successfully', accessToken: exchangeResponse.data.access_token });
-    } catch (error) {
-        console.error("Error exchanging public token:", error);
-        res.status(500).json({ message: 'Failed to exchange public token', error: error.message });
-    }
-};
+import Account from '../models/account.js';
+import mongoose from 'mongoose';
 
 // Sign Up Controller
 export const signUp = async (req, res) => {
@@ -198,3 +155,54 @@ export const getUserProfile = async (req, res) => {
         res.status(500).json({ message: 'Error fetching user profile', error: error.message });
     }
 };
+
+// Add a new bank account
+export const addBankAccount = async (req, res) => {
+    try {
+        const { userId, bankName, accountType, balance } = req.body;
+
+        // Ensure that userId is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+          return res.status(400).json({ message: 'Invalid userId' });
+        }
+    
+        // Ensure that the user exists
+        const user = await User.findById(userId);
+        if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+  
+      // Create a new bank account
+      const newAccount = new Account({
+        userId,
+        bankName,
+        accountType,
+        balance,
+      });
+  
+      await newAccount.save();
+  
+      res.status(201).json({
+        message: 'Bank account created successfully',
+        account: newAccount,
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Error adding bank account', error: error.message });
+    }
+  };
+  
+  // Get all bank accounts for a user
+  export const getBankAccounts = async (req, res) => {
+    try {
+      const { userId } = req.params;
+  
+      const accounts = await Account.find({ userId });
+      if (!accounts.length) {
+        return res.status(404).json({ message: 'No bank accounts found for this user' });
+      }
+  
+      res.status(200).json({ accounts });
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching bank accounts', error: error.message });
+    }
+  };
