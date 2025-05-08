@@ -1,6 +1,7 @@
 import User from '../models/model.js';
 import Account from '../models/account.js';
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 // Sign Up Controller
 export const signUp = async (req, res) => {
@@ -19,12 +20,15 @@ export const signUp = async (req, res) => {
             return res.status(400).json({ message: 'SSN already registered' });
         }
 
+        // Hash the password before saving it
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         // Create new user
         const user = new User({
             firstName,
             lastName,
             email,
-            password,
+            password: hashedPassword, // Store the hashed password
             address,
             state,
             postalCode,
@@ -66,8 +70,13 @@ export const signIn = async (req, res) => {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
-        // Check password
-        if (password !== user.password) {
+        if (!email || !password) {
+            return res.status(400).json({ message: 'Email and password are required' });
+        }
+
+        // Check password by comparing hashed password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
@@ -143,7 +152,11 @@ export const getUserProfile = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const user = await User.findById(id).select('-password');
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid user ID' });
+        }
+
+        const user = await User.findById(id).select('-password').populate('bankAccounts');
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -159,50 +172,61 @@ export const getUserProfile = async (req, res) => {
 // Add a new bank account
 export const addBankAccount = async (req, res) => {
     try {
-        const { userId, bankName, accountType, balance } = req.body;
+        const { bankName, accountType, balance } = req.body;
+        const { id } = req.params; // Getting userId from params
 
         // Ensure that userId is a valid ObjectId
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
           return res.status(400).json({ message: 'Invalid userId' });
         }
-    
+
         // Ensure that the user exists
-        const user = await User.findById(userId);
+        const user = await User.findById(id);
         if (!user) {
           return res.status(404).json({ message: 'User not found' });
         }
   
-      // Create a new bank account
-      const newAccount = new Account({
-        userId,
-        bankName,
-        accountType,
-        balance,
-      });
-  
-      await newAccount.save();
-  
-      res.status(201).json({
-        message: 'Bank account created successfully',
-        account: newAccount,
-      });
+        // Create a new bank account
+        const newAccount = new Account({
+            userId: id, // Use the userId from params
+            bankName,
+            accountType,
+            balance,
+        });
+
+        await newAccount.save();
+
+        // Optionally, you can push the new account into the user bankAccounts field:
+        user.bankAccounts.push(newAccount._id);
+        await user.save();
+
+        res.status(201).json({
+            message: 'Bank account created successfully',
+            account: newAccount,
+        });
+
     } catch (error) {
-      res.status(500).json({ message: 'Error adding bank account', error: error.message });
+        res.status(500).json({ message: 'Error adding bank account', error: error.message });
     }
-  };
-  
-  // Get all bank accounts for a user
-  export const getBankAccounts = async (req, res) => {
+};
+
+// Get all bank accounts for a user
+export const getBankAccounts = async (req, res) => {
     try {
-      const { userId } = req.params;
-  
-      const accounts = await Account.find({ userId });
-      if (!accounts.length) {
-        return res.status(404).json({ message: 'No bank accounts found for this user' });
-      }
-  
-      res.status(200).json({ accounts });
+        const { id } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid user ID' });
+        }
+
+        const accounts = await Account.find({ userId: id });
+        if (!accounts.length) {
+            return res.status(404).json({ message: 'No bank accounts found for this user' });
+        }
+
+        res.status(200).json({ accounts });
+
     } catch (error) {
-      res.status(500).json({ message: 'Error fetching bank accounts', error: error.message });
+        res.status(500).json({ message: 'Error fetching bank accounts', error: error.message });
     }
-  };
+};

@@ -15,13 +15,15 @@ const router = express.Router();
 router.post('/signup', signUp);
 router.post('/signin', signIn);
 
+// Bank Account routes
+router.post('/:id/account', addBankAccount);  // Add a bank account for a user
+router.get('/:id/accounts', getBankAccounts);
+
 // User profile routes
-router.get('/profile/:id', getUserProfile);
+router.get('/:id', getUserProfile);
 router.put('/update/:id', updateUser);
 router.delete('/delete/:id', deleteUser);
 
-// Bank Account routes
-router.post('/:userId/account', addBankAccount);  // Add a bank account for a user
-router.get('/:userId/accounts', getBankAccounts);
+
 
 export default router;

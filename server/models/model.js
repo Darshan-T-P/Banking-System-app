@@ -61,7 +61,12 @@ const userSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
-    }
+    },
+    // Add a reference to bank accounts
+    bankAccounts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Account' // Assuming you have a BankAccount model
+    }]
 }, {
     timestamps: true
 });
@@ -87,4 +92,4 @@ userSchema.methods.isLegalAge = function() {
 
 const User = mongoose.model('User', userSchema);
 
-export default User; 
+export default User;

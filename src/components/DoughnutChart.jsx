@@ -5,15 +5,23 @@ import { Doughnut } from "react-chartjs-2";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const DoughnutChart = ({ accounts }) => {
+  const labels = accounts.map(acc => acc.bankName);
+  const dataValues = accounts.map(acc => acc.balance);
+  const backgroundColors = [
+    '#0747b6', '#2265d8', '#2f91fa', '#6cb4ff', '#a1cfff', '#cce5ff' // Add more if needed
+  ];
+  console.log("Chart Labels:", labels);
+  console.log("Chart Data:", dataValues);
+
   const data = {
+    labels,
     datasets: [
       {
-        labels: 'Banks',
-        data: [1250, 2340, 4500],
-        backgroundColor: ['#0747b6', '#2265d8', '#2f91fa'],
+        data: dataValues,
+        backgroundColor: backgroundColors.slice(0, accounts.length),
+        borderWidth: 1,
       },
     ],
-    labels: ['Bank A', 'Bank B', 'Bank C'],
   };
 
   return (
@@ -23,7 +31,8 @@ const DoughnutChart = ({ accounts }) => {
         cutout: '60%',
         plugins: {
           legend: {
-            display: false,
+            display: true,
+            position: 'bottom',
           },
         },
       }}

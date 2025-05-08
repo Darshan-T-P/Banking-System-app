@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import './BankAccountModal.css'; // Add CSS below
+import './BankAccountModal.css'; // Import CSS for styling
 
 const BankAccountModal = ({ onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
     accountType: 'savings',
     bankName: '',
-    balance: 0,
+    balance: 0, // Set the balance to 0 as default
     accountNumber: ''
   });
 
+  // Handle form field change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -17,9 +18,12 @@ const BankAccountModal = ({ onClose, onSubmit }) => {
     }));
   };
 
+  // Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Pass the form data back to the parent component
     onSubmit(formData);
+    onClose(); // Close modal after submission
   };
 
   return (
@@ -29,22 +33,44 @@ const BankAccountModal = ({ onClose, onSubmit }) => {
         <form onSubmit={handleSubmit} className="modal-form">
           <label>
             Bank Name:
-            <input type="text" name="bankName" value={formData.bankName} onChange={handleChange} required />
+            <input 
+              type="text" 
+              name="bankName" 
+              value={formData.bankName} 
+              onChange={handleChange} 
+              required 
+            />
           </label>
           <label>
             Account Number:
-            <input type="text" name="accountNumber" value={formData.accountNumber} onChange={handleChange} required />
+            <input 
+              type="text" 
+              name="accountNumber" 
+              value={formData.accountNumber} 
+              onChange={handleChange} 
+              required 
+            />
           </label>
           <label>
             Account Type:
-            <select name="accountType" value={formData.accountType} onChange={handleChange}>
+            <select 
+              name="accountType" 
+              value={formData.accountType} 
+              onChange={handleChange}
+            >
               <option value="savings">Savings</option>
               <option value="checking">Checking</option>
             </select>
           </label>
           <label>
             Balance:
-            <input type="number" name="balance" value={formData.balance} onChange={handleChange} required />
+            <input 
+              type="number" 
+              name="balance" 
+              value={formData.balance} 
+              onChange={handleChange} 
+              required 
+            />
           </label>
           <div className="modal-actions">
             <button type="submit">Add Account</button>

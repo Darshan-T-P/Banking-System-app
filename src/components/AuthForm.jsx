@@ -84,21 +84,24 @@ const AuthForm = ({ type }) => {
     setError('')
 
     try {
-      if (type === 'signup') {
-        const response = await authService.signUp(formData)
-        if (response.user) {
-          localStorage.setItem('userId', response.user._id)
-          navigate('/')
+      const response = type === 'signup'
+        ? await authService.signUp(formData)
+        : await authService.signIn({
+            email: formData.email,
+            password: formData.password
+          })
+
+      if (response.user) {
+        // Save the user ID and user data in both sessionStorage and localStorage
+        sessionStorage.setItem('userId', response.user.id)
+        sessionStorage.setItem('user', JSON.stringify(response.user))  // Save entire user object
+        localStorage.setItem('userId', response.user.id)  // Save user ID in localStorage
+        localStorage.setItem('user', JSON.stringify(response.user))  // Save entire user object in localStorage
+        if (response.token) {
+          sessionStorage.setItem('authToken', response.token)  // Save token in sessionStorage
+          localStorage.setItem('authToken', response.token)  // Save token in localStorage
         }
-      } else {
-        const response = await authService.signIn({
-          email: formData.email,
-          password: formData.password
-        })
-        if (response.user) {
-          localStorage.setItem('userId', response.user._id)
-          navigate('/')
-        }
+        navigate('/')  // Redirect to home page after successful authentication
       }
     } catch (error) {
       setError(error.message || 'An error occurred. Please try again.')
