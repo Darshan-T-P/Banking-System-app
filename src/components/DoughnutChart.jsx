@@ -29,12 +29,12 @@ const DoughnutChart = ({ accounts }) => {
       data={data}
       options={{
         cutout: '60%',
-        plugins: {
-          legend: {
-            display: true,
-            position: 'bottom',
-          },
-        },
+        // plugins: {
+        //   legend: {
+        //     display: true,
+        //     position: 'bottom',
+        //   },
+        // },
       }}
     />
   );

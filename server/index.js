@@ -3,6 +3,7 @@ import { connect } from "mongoose";
 import dotenv from 'dotenv';
 import cors from 'cors';
 import userRoutes from './routers/user-routes.js';
+import transactionRoutes from './routers/transcation-routes.js';
 // import Product from "./models/product.model.js";
 // import productRoutes from "./routes/product.routes.js";
 
@@ -22,6 +23,7 @@ const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/bankin
 
 // Use routes
 app.use('/api/users', userRoutes);
+app.use('/api/transactions', transactionRoutes);
 
 // MongoDB connection
 connect(MONGODB_URI)

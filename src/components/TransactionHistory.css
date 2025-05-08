@@ -1,0 +1,78 @@
+.transaction-history {
+  padding: 2rem;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #333;
+  text-align: center;
+}
+
+
+h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+.transactions-page {
+  max-width: 100%;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.table-wrapper {
+  width: 100%;
+  max-width: 1200px; /* ⬅️ Increased from 1000px */
+  overflow-x: auto;
+  margin: 0 auto; /* Center it */
+}
+
+
+
+
+.transaction-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+
+.transaction-table th,
+.transaction-table td {
+  padding: 20px 24px; /* ⬅️ Increased cell padding */
+  font-size: 0.95rem;  /* ⬅️ Slightly larger text */
+}
+
+.transaction-table thead {
+  background-color:aqua;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.transaction-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.transaction-table tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+.transaction-table td {
+  border-bottom: 1px solid #eaeaea;
+}
+
+.mono {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.loading {
+  font-size: 1.2rem;
+  color: #555;
+  margin-top: 2rem;
+}

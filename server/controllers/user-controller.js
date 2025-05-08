@@ -1,5 +1,6 @@
 import User from '../models/model.js';
 import Account from '../models/account.js';
+import Transaction from '../models/transcationModel.js';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
@@ -230,3 +231,121 @@ export const getBankAccounts = async (req, res) => {
         res.status(500).json({ message: 'Error fetching bank accounts', error: error.message });
     }
 };
+
+// Create a new transaction (debit or credit)
+export const createTransaction = async (req, res) => {
+    try {
+      const { accountId, amount, transactionType, description } = req.body;
+  
+      // Check if account exists
+      const account = await Account.findById(accountId);
+      if (!account) {
+        return res.status(404).json({ message: 'Account not found' });
+      }
+  
+      // Update the account balance based on transaction type
+      let newBalance = account.balance;
+      if (transactionType === 'credit') {
+        newBalance += amount;
+      } else if (transactionType === 'debit') {
+        if (amount > account.balance) {
+          return res.status(400).json({ message: 'Insufficient funds' });
+        }
+        newBalance -= amount;
+      }
+  
+      // Update account balance
+      account.balance = newBalance;
+      await account.save();
+  
+      // Create a new transaction record
+      const transaction = new Transaction({
+        accountId,
+        amount,
+        transactionType,
+        description,
+        balanceAfterTransaction: newBalance,
+      });
+      await transaction.save();
+  
+      return res.status(201).json(transaction);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  };
+  
+  // Fetch transaction history for an account
+  export const getTransactions = async (req, res) => {
+    try {
+      const { accountId } = req.params;
+  
+      // Fetch transactions associated with the account
+      const transactions = await Transaction.find({ accountId }).sort({ createdAt: -1 });
+  
+      return res.status(200).json(transactions);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  };
+
+  // POST Route for transferring money between accounts
+  export const transferMoney = async (req, res) => {
+    const { senderAccountId, receiverAccountId, amount, description } = req.body;
+  
+    if (!senderAccountId || !receiverAccountId || !amount || amount <= 0) {
+      return res.status(400).json({ message: 'All fields are required and the amount must be greater than 0' });
+    }
+  
+    try {
+      // Retrieve sender and receiver accounts from the database
+      const sender = await Account.findById(senderAccountId);
+      const receiver = await Account.findById(receiverAccountId);
+  
+      if (!sender || !receiver) {
+        return res.status(404).json({ message: 'Sender or Receiver account not found' });
+      }
+  
+      // Check if sender has enough balance
+      if (sender.balance < amount) {
+        return res.status(400).json({ message: 'Insufficient funds' });
+      }
+  
+      // Deduct amount from sender's balance
+      sender.balance -= amount;
+  
+      // Add amount to receiver's balance
+      receiver.balance += amount;
+  
+      // Create a transaction record for the sender (debit)
+      const senderTransaction = new Transaction({
+        accountId: senderAccountId,
+        amount,
+        transactionType: 'debit',
+        description: `Transfer to ${receiverAccountId}: ${description}`,
+        balanceAfterTransaction: sender.balance,
+      });
+  
+      // Create a transaction record for the receiver (credit)
+      const receiverTransaction = new Transaction({
+        accountId: receiverAccountId,
+        amount,
+        transactionType: 'credit',
+        description: `Transfer from ${senderAccountId}: ${description}`,
+        balanceAfterTransaction: receiver.balance,
+      });
+  
+      // Save both transactions and updated accounts
+      await senderTransaction.save();
+      await receiverTransaction.save();
+      await sender.save();
+      await receiver.save();
+  
+      // Send success response with transaction details
+      res.json({ success: true, transaction: senderTransaction });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'An error occurred during the transaction' });
+    }
+  }

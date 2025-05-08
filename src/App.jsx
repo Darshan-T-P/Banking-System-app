@@ -2,10 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "r
 import SignUp from "./Pages/auth/signup/SignUp";
 import SignIn from "./Pages/auth/signin/SignIn";
 import Home from "./Pages/home/Home";
-// import MyBanks from "./Pages/mybanks/MyBanks";
-// import TransactionHistory from "./Pages/transactions/TransactionHistory";
-// import PaymentTransfers from "./Pages/payments/PaymentTransfers";
 import Sidebar from "./Pages/home/SideBar/Sidebar";
+import MyTranscations from "./Pages/home/Transcations/MyTransactions";
 import './index.css';
 
 const LayoutWithSidebar = ({ children }) => {
@@ -36,9 +34,9 @@ const AppRoutes = () => {
       <LayoutWithSidebar>
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* <Route path="/my-banks" element={<MyBanks />} />
-          <Route path="/transaction-history" element={<TransactionHistory />} />
-          <Route path="/payment-transfers" element={<PaymentTransfers />} /> */}
+          <Route path="/my-transactions" element={<MyTranscations />} />
+          {/* <Route path="/my-banks" element={<MyBanks />} /> */}
+          {/* <Route path="/payment-transfers" element={<PaymentTransfers />} /> */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </LayoutWithSidebar>

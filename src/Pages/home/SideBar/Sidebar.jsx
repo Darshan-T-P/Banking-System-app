@@ -1,21 +1,27 @@
-import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { FaHome, FaUniversity, FaHistory, FaExchangeAlt, FaSignOutAlt } from 'react-icons/fa';
-import './Sidebar.css';
+import React from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import {
+  FaHome,
+  FaUniversity,
+  FaHistory,
+  FaExchangeAlt,
+  FaSignOutAlt,
+} from "react-icons/fa";
+import "./Sidebar.css";
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const handleLogout = () => {
     localStorage.clear(); // Clears all stored user data
-    navigate('/signin');  // Redirects to sign-in page
+    navigate("/signin"); // Redirects to sign-in page
   };
 
   return (
     <div className="sidebar">
       <div className="sidebar-title">Banking System</div>
-      
+
       <nav className="nav-links">
         <NavLink to="/" className="nav-item">
           <FaHome className="nav-icon" />
@@ -25,7 +31,7 @@ const Sidebar = () => {
           <FaUniversity className="nav-icon" />
           <span>My Banks</span>
         </NavLink>
-        <NavLink to="/transaction-history" className="nav-item">
+        <NavLink to="/my-transactions" className="nav-item">
           <FaHistory className="nav-icon" />
           <span>Transaction History</span>
         </NavLink>

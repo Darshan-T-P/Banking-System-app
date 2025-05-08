@@ -21,6 +21,17 @@ const BankAccountModal = ({ onClose, onSubmit }) => {
   // Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Add some validation (optional)
+    if (formData.balance < 0) {
+      alert("Balance can't be negative.");
+      return;
+    }
+
+    if (!formData.bankName || !formData.accountNumber) {
+      alert("Please fill out all fields.");
+      return;
+    }
+
     // Pass the form data back to the parent component
     onSubmit(formData);
     onClose(); // Close modal after submission
@@ -39,6 +50,7 @@ const BankAccountModal = ({ onClose, onSubmit }) => {
               value={formData.bankName} 
               onChange={handleChange} 
               required 
+              aria-label="Bank Name"
             />
           </label>
           <label>
@@ -49,6 +61,7 @@ const BankAccountModal = ({ onClose, onSubmit }) => {
               value={formData.accountNumber} 
               onChange={handleChange} 
               required 
+              aria-label="Account Number"
             />
           </label>
           <label>
@@ -57,6 +70,7 @@ const BankAccountModal = ({ onClose, onSubmit }) => {
               name="accountType" 
               value={formData.accountType} 
               onChange={handleChange}
+              aria-label="Account Type"
             >
               <option value="savings">Savings</option>
               <option value="checking">Checking</option>
@@ -70,6 +84,8 @@ const BankAccountModal = ({ onClose, onSubmit }) => {
               value={formData.balance} 
               onChange={handleChange} 
               required 
+              min="0"  // Prevent negative balance input
+              aria-label="Initial Balance"
             />
           </label>
           <div className="modal-actions">

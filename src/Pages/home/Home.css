@@ -1,34 +1,92 @@
-* {
-    box-sizing: border-box; /* Ensure padding and borders don't cause overflow */
-}
 
-body {
-    margin: 0; /* Remove default browser margins */
-    padding:20;
-}
-
-.home-page {
-    width: 80vw; /* Full viewport width */
-    height: 100vh; /* Full viewport height */
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-}
-
-.home-header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Align to top-left */
-    justify-content: flex-start;
-    padding: 1rem;
-    margin-bottom: 2rem;
-    background-color: #f0f4f8; /*Light background */
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow */
-    width: 100%; /* Full width of parent */
-}
 
 .text-bankGradient {
     color: #007BFF; /* Blue color */
     font-weight: bold; /* Bold text */
 }
+
+.add-account-button {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(45deg, #6a82fb, #fc5c7d); /* Gradient background */
+    border: none;
+    border-radius: 30px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .add-account-button:hover {
+    background: linear-gradient(45deg, #fc5c7d, #6a82fb); /* Reverse gradient on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .add-account-button:focus {
+    outline: none;
+  }
+  
+  .add-account-button svg {
+    font-size: 18px;
+  }
+  
+  .add-account-button {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(45deg, #6a82fb, #fc5c7d); /* Gradient background */
+    border: none;
+    border-radius: 30px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .add-account-button:hover {
+    background: linear-gradient(45deg, #fc5c7d, #6a82fb); /* Reverse gradient on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .add-account-button:focus {
+    outline: none;
+  }
+  
+  .add-account-button svg {
+    font-size: 18px;
+  }
+  
+  /* Flexbox container to align the button and the total balance side by side */
+  .home-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    justify-content: flex-start;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    background-color: #f0f4f8; /* Light background */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow */
+    width: 100%; /* Full width of parent */
+  }
+  
+  .home-header > div {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .home-content {
+    display: flex;
+    flex-direction: column;
+  }
+  

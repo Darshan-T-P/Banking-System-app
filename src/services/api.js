@@ -1,5 +1,6 @@
 const API_URL = 'http://localhost:5000/api/users';
-
+const API_URL_T = 'http://localhost:5000/api/transactions'; // Transaction API URL
+import axios from 'axios';
 
 // Helper function to handle API responses
 const handleResponse = async (response) => {
@@ -87,3 +88,24 @@ export const userService = {
     }
     
 };
+
+export const getTransactionHistory = async (accountId) => {
+    try {
+      const response = await axios.get(`${API_URL_T}/${accountId}/history`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching transaction history:', error);
+      throw error;
+    }
+  };
+  
+  // Create a new transaction
+  export const createTransaction = async (transactionData) => {
+    try {
+      const response = await axios.post(`${API_URL_T}/create`, transactionData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating transaction:', error);
+      throw error;
+    }
+  };
